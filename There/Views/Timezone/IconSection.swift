@@ -3,11 +3,6 @@ import SwiftUI
 struct IconSection: View {
     @Binding var image: NSImage?
     @Binding var countryEmoji: String
-    @Binding var showingXAccountInput: Bool
-    @Binding var showingTGAccountInput: Bool
-
-    @State private var xHovered = false
-    @State private var tgHovered = false
 
     var body: some View {
         VStack {
@@ -44,15 +39,16 @@ struct SocialMediaButton: View {
 }
 
 struct SocialMediaInput: View {
-    let platform: String
+    let source: PhotoSource
     @Binding var username: String
     @Binding var image: NSImage?
     @Binding var debounceTask: Task<Void, Never>?
 
     var body: some View {
         VStack(alignment: .leading) {
-            StyledLabel(title: platform == "X" ? "Enter an \(platform) username" : "Enter a \(platform) username")
+            StyledLabel(title: "Enter an \(source.description) username")
                 .padding(.top, 8)
+
             Input(text: $username, placeholder: "eg. dena_sohrabi")
                 .onChange(of: username) { value in
                     debounceTask?.cancel()

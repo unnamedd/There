@@ -8,8 +8,7 @@ struct IconView: View {
 
     @State private var showPopover = false
     @State private var isDropTargeted = false
-    @State private var showingXAccountInput = false
-    @State private var showingTGAccountInput = false
+    @State private var photoSource: PhotoSource = .finder
     @State private var username = ""
     @State private var debounceTask: Task<Void, Never>?
 
@@ -55,52 +54,50 @@ struct IconView: View {
         VStack {
             importButtons
 
-            if showingXAccountInput {
-                SocialMediaInput(platform: "X", username: $username, image: $image, debounceTask: $debounceTask)
-                    .onSubmit {
-                        showPopover = false
-                    }
-            } else if showingTGAccountInput {
-                SocialMediaInput(platform: "Telegram", username: $username, image: $image, debounceTask: $debounceTask)
-                    .onSubmit {
-                        showPopover = false
-                    }
+            switch photoSource {
+            case .finder:
+                EmptyView()
+
+            default:
+                SocialMediaInput(
+                    source: photoSource,
+                    username: $username,
+                    image: $image,
+                    debounceTask: $debounceTask
+                )
+                .onSubmit {
+                    showPopover = false
+                }
             }
         }
         .padding()
     }
 
     private var importButtons: some View {
-        HStack(alignment: .center, spacing: 0) {
-            Text("Set from").foregroundColor(.secondary)
-            Button("Telegram") {
-                showingXAccountInput = false
-                showingTGAccountInput = true
-            }
-            .buttonStyle(.link)
-            .padding(.horizontal, 2)
-            Text("/").foregroundColor(.secondary).padding(.horizontal, 2)
-            Button("X") {
-                showingTGAccountInput = false
-                showingXAccountInput = true
-            }
-            .buttonStyle(.link)
-            .padding(.horizontal, 2)
-            Text("/").foregroundColor(.secondary).padding(.horizontal, 2)
-            Button("Finder") {
-                let selectedImage = Utils.shared.selectPhoto()
-                DispatchQueue.main.async {
-                    self.image = selectedImage
-                }
-                }
-            }
-        }
-    }
-
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Select one option")
+                .foregroundColor(.secondary)
+                .padding(.leading, 2)
 
             Spacer()
+                .frame(height: 10)
 
+            HStack(alignment: .center, spacing: 0) {
+                ForEach(PhotoSource.allCases) {source in
+                    CompactButton(title: source.description) {
+                        switch source {
+                        case .finder:
+                            let selectedImage = Utils.shared.selectPhoto()
+                            DispatchQueue.main.async {
+                                self.image = selectedImage
+                            }
+
+                        default:
+                            photoSource = source
+                        }
                     }
+                    .buttonStyle(.link)
+                    .padding(2)
                 }
             }
         }

@@ -71,9 +71,9 @@ struct SecondaryButtonStyle: ButtonStyle {
 
     var lightGray: Color {
         if scheme == .dark {
-            return Color(NSColor.systemGray).opacity(0.2)
+            Color(NSColor.systemGray).opacity(0.2)
         } else {
-            return Color(red: 0.86, green: 0.86, blue: 0.86) // #DCDCDC
+            Color(red: 0.86, green: 0.86, blue: 0.86) // #DCDCDC
         }
     }
 

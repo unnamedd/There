@@ -3,7 +3,7 @@ import MapKit
 import SwiftUI
 
 struct EditTimeZoneView: View {
-    var entryId: Int64?
+    var entryID: Int64?
     @Environment(\.database) var database
     @StateObject private var searchCompleter = SearchCompleter()
     @EnvironmentObject var router: Router
@@ -26,12 +26,10 @@ struct EditTimeZoneView: View {
         VStack(alignment: .center, spacing: 0) {
             if isLoading {
                 ProgressView()
-            } else if let entry = entry {
+            } else if entry != nil {
                 IconSection(
                     image: $image,
-                    countryEmoji: $countryEmoji,
-                    showingXAccountInput: $showingXAccountInput,
-                    showingTGAccountInput: $showingTGAccountInput
+                    countryEmoji: $countryEmoji
                 )
 
                 FormSection(
@@ -42,8 +40,7 @@ struct EditTimeZoneView: View {
                     searchCompleter: searchCompleter,
                     countryEmoji: $countryEmoji,
                     image: $image,
-                    showingTGAccountInput: $showingTGAccountInput,
-                    showingXAccountInput: $showingXAccountInput,
+
                     isEditing: true,
                     saveEntry: saveEntry
                 )
@@ -100,7 +97,7 @@ struct EditTimeZoneView: View {
 }
 
 #Preview {
-    EditTimeZoneView(entryId: 1712)
+    EditTimeZoneView(entryID: 1712)
         .frame(width: 300, height: 400)
         .environment(\.database, .shared)
 }

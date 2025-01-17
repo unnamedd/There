@@ -22,9 +22,7 @@ struct AddTimezone: View {
         VStack(alignment: .center, spacing: 0) {
             IconSection(
                 image: $image,
-                countryEmoji: $countryEmoji,
-                showingXAccountInput: $showingXAccountInput,
-                showingTGAccountInput: $showingTGAccountInput
+                countryEmoji: $countryEmoji
             )
 
             FormSection(
@@ -35,8 +33,6 @@ struct AddTimezone: View {
                 searchCompleter: searchCompleter,
                 countryEmoji: $countryEmoji,
                 image: $image,
-                showingTGAccountInput: $showingTGAccountInput,
-                showingXAccountInput: $showingXAccountInput,
                 saveEntry: saveEntry
             )
         }

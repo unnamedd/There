@@ -10,8 +10,6 @@ struct FormSection: View {
     @StateObject var searchCompleter: SearchCompleter
     @Binding var countryEmoji: String
     @Binding var image: NSImage?
-    @Binding var showingTGAccountInput: Bool
-    @Binding var showingXAccountInput: Bool
     @State var showError: Bool = false
     @State private var username = ""
     @State private var debounceTask: Task<Void, Never>?
