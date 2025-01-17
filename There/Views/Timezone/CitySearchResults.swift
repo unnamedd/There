@@ -67,8 +67,13 @@ struct CitySearchResults: View {
         }
         .frame(width: 300, height: 400)
     }
+}
+
+// MARK: - Private Methods
+
+private extension CitySearchResults {
     
-    private func handleKeyEvent(_ event: NSEvent) -> Bool {
+    func handleKeyEvent(_ event: NSEvent) -> Bool {
         switch event.keyCode {
         case 126: // Up arrow
             moveSelection(direction: .up)
@@ -89,7 +94,7 @@ struct CitySearchResults: View {
         }
     }
     
-    private func moveSelection(direction: KeyboardNavigationDirection) {
+    func moveSelection(direction: KeyboardNavigationDirection) {
         let itemCount = searchCompleter.results.count
         switch direction {
         case .up:
@@ -128,7 +133,7 @@ struct CitySearchResults: View {
         }
     }
     
-    private func selectCity(_ result: TimeZoneSearchResult) {
+    func selectCity(_ result: TimeZoneSearchResult) {
         switch result.type {
         case .city:
             selectedCity = "\(result.title), \(result.subtitle)"
@@ -166,7 +171,7 @@ struct CitySearchResults: View {
         isShowingPopover = false
     }
     
-    private func fallbackToGeocoding(for address: String) {
+    func fallbackToGeocoding(for address: String) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(address) { [self] placemarks, _ in
             if let placemark = placemarks?.first, let timezone = placemark.timeZone {
