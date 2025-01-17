@@ -48,7 +48,7 @@ struct EditTimeZoneView: View {
                 NotFoundView()
             }
 
-            if let errorMessage = errorMessage {
+            if let errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
             }
@@ -67,31 +67,35 @@ struct EditTimeZoneView: View {
 
     private func loadEntry() async {
         isLoading = true
+
         do {
             try await database.reader.read { db in
-                if let id = entryId {
-                    let fetchedEntry = try Entry.fetchOne(db, id: id)
-                    self.entry = fetchedEntry
-                    if let entry = fetchedEntry {
-                        self.name = entry.name
-                        self.city = entry.city
-                        self.selectedTimeZone = TimeZone(identifier: entry.timezoneIdentifier)
-                        self.countryEmoji = entry.flag ?? ""
-                        if entry.photoData != nil, let imageURL = URL(string: entry.photoData!) {
-                            if let imageData = try? Data(contentsOf: imageURL) {
-                                self.image = NSImage(data: imageData)
-                            } else {
-                                print("Failed to load image data from URL: \(imageURL)")
-                            }
-                        } else {
-                            self.image = nil
+                guard let id = entryID else {
+                    return
+                }
+
+                let fetchedEntry = try Entry.fetchOne(db, id: id)
+                self.entry = fetchedEntry
+                
+                if let entry = fetchedEntry {
+                    self.name = entry.name
+                    self.city = entry.city
+                    self.selectedTimeZone = TimeZone(identifier: entry.timezoneIdentifier)
+                    self.countryEmoji = entry.flag ?? ""
+                    
+                    if entry.photoData != nil, let imageURL = URL(string: entry.photoData!) {
+                        if let imageData = try? Data(contentsOf: imageURL) {
+                            self.image = NSImage(data: imageData)
                         }
+                    } else {
+                        self.image = nil
                     }
                 }
             }
         } catch {
             errorMessage = "Failed to load entry: \(error.localizedDescription)"
         }
+
         isLoading = false
     }
 }

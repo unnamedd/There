@@ -16,21 +16,22 @@ struct IconView: View {
         iconContent
             .frame(width: 70, height: 70)
             .onTapGesture { showPopover = true }
-            .popover(isPresented: $showPopover) { popoverContent }
+            .popover(isPresented: $showPopover) {
+                popoverContent
+            }
     }
 
+    @ViewBuilder
     private var iconContent: some View {
-        Group {
-            if let image = image {
-                Image(nsImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .clipShape(Circle())
-            } else if !countryEmoji.isEmpty {
-                flagView
-            } else {
-                placeholderView
-            }
+        if let image {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFill()
+                .clipShape(Circle())
+        } else if !countryEmoji.isEmpty {
+            flagView
+        } else {
+            placeholderView
         }
     }
 
@@ -115,7 +116,15 @@ struct IconView: View {
                 }
             }
         }
+        
+        return true
     }
 }
 
+#Preview("With Popover") {
+    IconView(
+        image: .constant(nil),
+        countryEmoji: .constant("US")
+    )
+    .padding()
 }

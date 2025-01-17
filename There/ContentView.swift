@@ -6,12 +6,26 @@ struct ContentView: View {
         switch router.activeRoute {
         case .mainView:
             MainView()
+
         case .addTimezone:
             AddTimezone()
-                .transition(.asymmetric(insertion: .push(from: .trailing), removal: .push(from: .leading)))
-        case let .editTimeZone(entryId):
-            EditTimeZoneView(entryId: entryId)
-                .transition(.asymmetric(insertion: .push(from: .trailing), removal: .push(from: .leading)))
+                .transition(
+                    .asymmetric(
+                        insertion: .push(from: .trailing),
+                        removal: .push(from: .leading)
+                    )
+                )
+
+        case let .editTimeZone(entryID):
+            EditTimeZoneView(
+                entryID: entryID
+            )
+            .transition(
+                .asymmetric(
+                    insertion: .push(from: .trailing),
+                    removal: .push(from: .leading)
+                )
+            )
         }
     }
 }

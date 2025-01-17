@@ -15,27 +15,31 @@ struct CitySearchResults: View {
     @Binding var countryEmoji: String
     @FocusState private var isFocused: Bool
     @State private var selectedIndex: Int = -1
-
+    
     var body: some View {
         VStack(spacing: 0) {
-            CustomTextField(text: $searchCompleter.queryFragment, placeholder: "Search for a city or timezone", onKeyDown: handleKeyEvent)
-                .textFieldStyle(.roundedBorder)
-                .padding(.horizontal, 6)
-                .frame(width: 280, height: 32)
-                .background(AdaptiveColors.textFieldBackground)
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(isFocused ? .blue : AdaptiveColors.textFieldBorder.opacity(0.5), lineWidth: 1)
-                )
-                .focused($isFocused)
-                .foregroundColor(AdaptiveColors.textColor)
-                .padding(.vertical)
-
+            CustomTextField(
+                text: $searchCompleter.queryFragment,
+                placeholder: "Search for a city or timezone",
+                onKeyDown: handleKeyEvent
+            )
+            .textFieldStyle(.roundedBorder)
+            .padding(.horizontal, 6)
+            .frame(width: 280, height: 32)
+            .background(AdaptiveColors.textFieldBackground)
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(isFocused ? .blue : AdaptiveColors.textFieldBorder.opacity(0.5), lineWidth: 1)
+            )
+            .focused($isFocused)
+            .foregroundColor(AdaptiveColors.textColor)
+            .padding(.vertical)
+            
             ScrollViewReader { proxy in
                 List(searchCompleter.results.indices, id: \.self) { index in
                     let result = searchCompleter.results[index]
-
+                    
                     Button(action: {
                         self.selectCity(result)
                     }) {
@@ -63,28 +67,28 @@ struct CitySearchResults: View {
         }
         .frame(width: 300, height: 400)
     }
-
+    
     private func handleKeyEvent(_ event: NSEvent) -> Bool {
         switch event.keyCode {
         case 126: // Up arrow
             moveSelection(direction: .up)
             return true
-
+            
         case 125: // Down arrow
             moveSelection(direction: .down)
             return true
-
+            
         case 36: // Return key
             if selectedIndex >= 0 && selectedIndex < searchCompleter.results.count {
                 selectCity(searchCompleter.results[selectedIndex])
             }
             return true
-
+            
         default:
             return false
         }
     }
-
+    
     private func moveSelection(direction: KeyboardNavigationDirection) {
         let itemCount = searchCompleter.results.count
         switch direction {
@@ -101,7 +105,7 @@ struct CitySearchResults: View {
                 // If focus is on the search field, move to the bottom of the list
                 selectedIndex = itemCount - 1
             }
-
+            
         case .down:
             if selectedIndex == -1 {
                 // If focus is on the search field and there are items, select the first item
@@ -117,18 +121,18 @@ struct CitySearchResults: View {
                 // If at the bottom of the list, move focus back to the search field
                 selectedIndex = -1
             }
-
+            
         case .enter:
             // Enter key handling is done elsewhere
             break
         }
     }
-
+    
     private func selectCity(_ result: TimeZoneSearchResult) {
         switch result.type {
         case .city:
             selectedCity = "\(result.title), \(result.subtitle)"
-
+            
             Task {
                 if let timezone = await result.getTimeZone() {
                     await MainActor.run {
@@ -147,21 +151,21 @@ struct CitySearchResults: View {
                     }
                 }
             }
-
+            
         case .abbreviation:
             selectedCity = result.title
             selectedTimezone = result.identifier.flatMap { TimeZone(identifier: $0) }
             countryEmoji = ""
-
+            
         case .utcOffset:
             selectedCity = result.title
             selectedTimezone = result.identifier.flatMap { TimeZone(identifier: $0) }
             countryEmoji = ""
         }
-
+        
         isShowingPopover = false
     }
-
+    
     private func fallbackToGeocoding(for address: String) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(address) { [self] placemarks, _ in
@@ -171,23 +175,4 @@ struct CitySearchResults: View {
             }
         }
     }
-
-//    private func selectCity(_ result: TimeZoneSearchResult) {
-//
-//        selectedCity = "\(result.title), \(result.subtitle)"
-//        selectedTimezone = result.getTimeZone()
-//
-//        if result.type == .city {
-//            let geocoder = CLGeocoder()
-//            geocoder.geocodeAddressString(selectedCity) { placemarks, _ in
-//                if let placemark = placemarks?.first {
-//                    countryEmoji = Utils.shared.getCountryEmoji(for: placemark.isoCountryCode ?? "")
-//                }
-//            }
-//        } else {
-//            countryEmoji = ""
-//        }
-//
-//        isShowingPopover = false
-//    }
 }
