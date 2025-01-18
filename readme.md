@@ -8,6 +8,10 @@ A native menu bar app to track friends, teammates, or city time zones on macOS.
 brew install --cask there
 ```
 
+> [!IMPORTANT]
+> This fork is for me (Thiago) playing and working on my own ideas. I have no commitment to it. If you want more official things, like updates and an easy way to install it, it is better to stick to the official repository.
+
+
 ![Screen-shot of the app](https://there.pm/app@2x.jpg)
 
 - Add photos for people from X (Twitter), Telegram, Bluesky, or select locally
